@@ -1,0 +1,33 @@
+name: "Kagura AI"
+description: "Trigger Kagura AI test runs from GitHub Actions"
+author: "Camie Tech"
+
+inputs:
+  api-key:
+    description: "Kagura API key (kag_live_...)"
+    required: true
+  target-url:
+    description: "Override target URL for the run"
+    required: false
+  test-group:
+    description: "Test group ID to run (uuid). If provided, triggers group run"
+    required: false
+  test-ids:
+    description: "Comma-separated list of test IDs (uuid1,uuid2). Used if test-group not provided"
+    required: false
+  wait-for-results:
+    description: "If true, poll for completion and fail workflow on failures"
+    required: false
+    default: "true"
+  poll-interval-seconds:
+    description: "Polling interval in seconds (default 15)"
+    required: false
+    default: "15"
+  timeout-minutes:
+    description: "Max time to wait for results before failing (default 60)"
+    required: false
+    default: "60"
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
