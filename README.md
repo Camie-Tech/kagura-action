@@ -11,17 +11,22 @@ Trigger Kagura AI test runs from GitHub Actions.
 - `wait-for-results` (default `true`) — poll status/results and fail workflow if tests fail
 - `poll-interval-seconds` (default `15`)
 - `timeout-minutes` (default `60`)
+- `github-token` (optional) — GitHub token for Check Run integration (stretch). If omitted, set env `KAGURA_GITHUB_TOKEN`.
 
 ## Example
 
 ```yaml
 - name: Run Kagura tests
-  uses: kagura-ai/kagura-action@v1
+  uses: Camie-Tech/kagura-action@v1
   with:
     api-key: ${{ secrets.KAGURA_API_KEY }}
     test-group: "<your-test-group-uuid>"
     target-url: "https://staging.yourapp.com"
     wait-for-results: true
+  env:
+    # Stretch: allow Kagura to create/update GitHub Check Runs
+    # Prefer secrets.GITHUB_TOKEN first; use a PAT only if required.
+    KAGURA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 > Note: `@v1` will be available after the first release tag is created.

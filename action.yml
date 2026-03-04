@@ -27,6 +27,9 @@ inputs:
     description: "Max time to wait for results before failing (default 60)"
     required: false
     default: "60"
+  github-token:
+    description: "Optional GitHub token for creating/updating GitHub Check Runs (Checks: write). If omitted, action will use env KAGURA_GITHUB_TOKEN if set."
+    required: false
 
 runs:
   using: "node20"

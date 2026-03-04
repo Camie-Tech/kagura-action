@@ -27641,20 +27641,36 @@ async function run() {
     const pollIntervalSeconds = Number(core.getInput('poll-interval-seconds') || 15);
     const timeoutMinutes = Number(core.getInput('timeout-minutes') || 60);
 
+    // Optional GitHub token for check run integration (stretch goal)
+    const githubToken = core.getInput('github-token') || process.env.KAGURA_GITHUB_TOKEN || '';
+
     const testIds = parseCsvUuids(testIdsCsv);
 
     if (!testGroupId && testIds.length === 0) {
       throw new Error('You must provide either test-group or test-ids');
     }
 
+    // GitHub context (for future GitHub Check Run integration)
+    const ghRepo = process.env.GITHUB_REPOSITORY || ''; // e.g. ORG/REPO
+    const ghSha = process.env.GITHUB_SHA || '';
+    const [ghOwner, ghName] = ghRepo.includes('/') ? ghRepo.split('/') : ['', ''];
+
     const triggerBody = {
       ...(testGroupId ? { testGroupId } : { testIds }),
       ...(targetUrl ? { targetUrl } : {}),
+      metadata: {
+        ...(ghOwner && ghName && ghSha
+          ? { github: { owner: ghOwner, repo: ghName, sha: ghSha } }
+          : {}),
+      },
     };
 
     core.info(`Triggering Kagura run on ${BASE_URL}...`);
+    const extraHeaders = githubToken ? { 'X-Kagura-Github-Token': githubToken } : {};
+
     const trigger = await kaguraFetch('/api/v1/tests/trigger', apiKey, {
       method: 'POST',
+      headers: extraHeaders,
       body: JSON.stringify(triggerBody),
     });
 
