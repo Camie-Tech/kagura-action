@@ -117,7 +117,8 @@ async function run() {
       },
     };
 
-    core.info(`Triggering Kagura run on ${BASE_URL}...`);
+    const baseUrl = getBaseUrl();
+    core.info(`Triggering Kagura run on ${baseUrl}...`);
     const extraHeaders = githubToken ? { 'X-Kagura-Github-Token': githubToken } : {};
 
     const trigger = await kaguraFetch('/api/v1/tests/trigger', apiKey, {
