@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const crypto = require('crypto');
 
-const BASE_URL = 'https://kagura-app.camie.tech';
+const DEFAULT_BASE_URL = 'https://kagura-app.camie.tech';
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -21,8 +21,17 @@ function parseCsvUuids(input) {
     .filter(Boolean);
 }
 
+function getBaseUrl() {
+  // Precedence: input > env > default
+  const inputUrl = core.getInput('kagura-api-url');
+  const envUrl = process.env.KAGURA_API_URL;
+  const base = (inputUrl || envUrl || DEFAULT_BASE_URL).trim();
+  return base.replace(/\/+$/, '');
+}
+
 async function kaguraFetch(path, apiKey, options = {}) {
-  const url = `${BASE_URL}${path}`;
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}${path}`;
   const res = await fetch(url, {
     ...options,
     headers: {
@@ -120,8 +129,8 @@ async function run() {
     const runId = trigger.runId;
     core.setOutput('runId', runId);
     core.info(`Run queued: ${runId}`);
-    core.info(`Status URL: ${BASE_URL}${trigger.statusUrl}`);
-    core.info(`Results URL: ${BASE_URL}${trigger.resultsUrl}`);
+    core.info(`Status URL: ${baseUrl}${trigger.statusUrl}`);
+    core.info(`Results URL: ${baseUrl}${trigger.resultsUrl}`);
 
     if (!waitForResults) {
       core.info('wait-for-results=false. Exiting without polling.');

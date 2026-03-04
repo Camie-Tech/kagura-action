@@ -23,6 +23,8 @@ Trigger Kagura AI test runs from GitHub Actions.
     test-group: "<your-test-group-uuid>"
     target-url: "https://staging.yourapp.com"
     wait-for-results: true
+    # Optional: point to a non-default Kagura instance (e.g. ngrok URL for local dev)
+    # kagura-api-url: "https://xxxx.ngrok-free.app"
   env:
     # Stretch: allow Kagura to create/update GitHub Check Runs
     # Prefer secrets.GITHUB_TOKEN first; use a PAT only if required.

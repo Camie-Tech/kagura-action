@@ -6,6 +6,9 @@ inputs:
   api-key:
     description: "Kagura API key (kag_live_...)"
     required: true
+  kagura-api-url:
+    description: "Kagura API base URL (defaults to https://kagura-app.camie.tech). For local dev, set this to your ngrok URL."
+    required: false
   target-url:
     description: "Override target URL for the run"
     required: false
